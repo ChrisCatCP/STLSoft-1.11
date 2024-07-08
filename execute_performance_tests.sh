@@ -3,17 +3,18 @@
 ScriptPath=$0
 Dir=$(cd $(dirname "$ScriptPath"); pwd)
 Basename=$(basename "$ScriptPath")
-CMakePath=$Dir/_build
+CMakeDir=$Dir/_build
 
 
 # ##########################################################
 # command-line handling
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-        --help)
 
-            cat << EOF
+  case $1 in
+    --help)
+
+      cat << EOF
 STLSoft is a suite of libraries that provide STL extensions and facades over operating-system and technology-specific APIs
 Copyright (c) 2019-2024, Matthew Wilson and Synesis Information Systems
 Copyright (c) 2002-2019, Matthew Wilson and Synesis Software
@@ -33,26 +34,26 @@ Flags/options:
 
 EOF
 
-            exit 0
-            ;;
-        *)
+      exit 0
+      ;;
+    *)
 
-            >&2 echo "$ScriptPath: unrecognised argument '$1'; use --help for usage"
+      >&2 echo "$ScriptPath: unrecognised argument '$1'; use --help for usage"
 
-            exit 1
-            ;;
-    esac
+      exit 1
+      ;;
+  esac
 
-    shift
+  shift
 done
 
 
 # ##########################################################
 # main()
 
-mkdir -p $CMakePath || exit 1
+mkdir -p $CMakeDir || exit 1
 
-cd $CMakePath
+cd $CMakeDir
 
 echo "Executing make and then running all test programs"
 
@@ -60,25 +61,25 @@ status=0
 
 if make; then
 
-    for f in $(find $Dir -type f -perm +111 '(' -name 'test_perf*' -o -name 'test.perf*' ')')
-    do
+  for f in $(find $Dir -type f -perm +111 '(' -name 'test_perf*' -o -name 'test.perf*' ')')
+  do
 
-        echo
-        echo "executing $f:"
+    echo
+    echo "executing $f:"
 
-        if $f; then
+    if $f; then
 
-            :
-        else
+      :
+    else
 
-            status=$?
+      status=$?
 
-            break 1
-        fi
-    done
+      break 1
+    fi
+  done
 else
 
-    status=$?
+  status=$?
 fi
 
 cd ->/dev/null
