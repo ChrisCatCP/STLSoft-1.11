@@ -4,6 +4,7 @@ ScriptPath=$0
 Dir=$(cd $(dirname "$ScriptPath"); pwd)
 Basename=$(basename "$ScriptPath")
 CMakeDir=$Dir/_build
+OsIsWindows=0
 
 Directories=(
     CMakeFiles
@@ -11,6 +12,7 @@ Directories=(
     cmake
     examples
     projects
+    src
     test
 )
 Files=(
@@ -21,6 +23,29 @@ Files=(
     cmake_install.cmake
     install_manifest.txt
 )
+
+
+# ##########################################################
+# operating environment detection
+
+OsName="$(uname -s)"
+case "${OsName}" in
+  CYGWIN*|MINGW*|MSYS_NT*)
+
+    Directories+=(
+      Win32
+      x64
+    )
+    Files+=(
+      "*.filters"
+      "*.sln"
+      "*.vcxproj"
+    )
+    ;;
+  *)
+
+    ;;
+esac
 
 
 # ##########################################################
@@ -93,19 +118,23 @@ else
     num_dirs_removed=$((num_dirs_removed+1))
   done
 
+  cd "$CMakeDir"
+
   for f in ${Files[@]}
   do
+    for fq_file_path in $f
+    do
+      [ -f "$fq_file_path" ] || continue
 
-    fq_file_path="$CMakeDir/$f"
+      echo "removing file '$fq_file_path'"
 
-    [ -f "$fq_file_path" ] || continue
+      rm -f "$fq_file_path"
 
-    echo "removing file '$f'"
-
-    rm -f "$fq_file_path"
-
-    num_files_removed=$((num_files_removed+1))
+      num_files_removed=$((num_files_removed+1))
+    done
   done
+
+  cd ->/dev/null
 
   if [ 0 -eq $num_dirs_removed ] && [ 0 -eq $num_files_removed ]; then
 

@@ -31,13 +31,13 @@ while [[ $# -gt 0 ]]; do
 
       CMakeExamplesDisabled=1
       ;;
-    -T|--disable-testing)
-
-      CMakeTestingDisabled=1
-      ;;
     -m|--run-make)
 
       RunMake=1
+      ;;
+    -T|--disable-testing)
+
+      CMakeTestingDisabled=1
       ;;
     --help)
 
