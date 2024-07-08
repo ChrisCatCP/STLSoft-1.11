@@ -56,8 +56,8 @@
 #ifndef STLSOFT_DOCUMENTATION_SKIP_SECTION
 # define STLSOFT_VER_STLSOFT_H_STLSOFT_MAJOR    3
 # define STLSOFT_VER_STLSOFT_H_STLSOFT_MINOR    53
-# define STLSOFT_VER_STLSOFT_H_STLSOFT_REVISION 1
-# define STLSOFT_VER_STLSOFT_H_STLSOFT_EDIT     555
+# define STLSOFT_VER_STLSOFT_H_STLSOFT_REVISION 2
+# define STLSOFT_VER_STLSOFT_H_STLSOFT_EDIT     556
 #else /* ? STLSOFT_DOCUMENTATION_SKIP_SECTION */
 /* # include "./internal/doxygen_defs.h" */
 #endif /* !STLSOFT_DOCUMENTATION_SKIP_SECTION */
@@ -2454,7 +2454,7 @@ typedef ss_streamoff_t                                      streamoff_t;        
 template <ss_typename_param_k X>
 inline
 void
-throw_x(
+stlsoft_CXX_throw(
     X const& x
 ) /* throw(X) */
 {
@@ -2463,14 +2463,23 @@ throw_x(
     throw x2;
 }
 
-#  define STLSOFT_THROW_X(x)                                STLSOFT_NS_QUAL(throw_x)(x)
+#  define STLSOFT_THROW_X(x)                                STLSOFT_NS_QUAL(stlsoft_CXX_throw)(x)
 
 # else
 
 template <ss_typename_param_k X>
+# if 0
+# elif __cplusplus >= 201703L
+[[noreturn]]
+# elif 0 || \
+       defined(STLSOFT_COMPILER_IS_CLANG) || \
+       defined(STLSOFT_COMPILER_IS_GCC) || \
+       0
+__attribute__((noreturn))
+# endif
 inline
 void
-throw_x(
+stlsoft_CXX_throw(
     X const& x
 )
 {
@@ -2479,12 +2488,14 @@ throw_x(
     X const* px =   &x;
 
     throw *px;
+
 #  else /* ? compiler */
     throw x;
+
 #  endif /* compiler */
 }
 
-#  define STLSOFT_THROW_X(x)                                STLSOFT_NS_QUAL(throw_x)(x)
+#  define STLSOFT_THROW_X(x)                                STLSOFT_NS_QUAL(stlsoft_CXX_throw)(x)
 
 # endif /* compiler */
 
