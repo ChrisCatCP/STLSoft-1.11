@@ -4,7 +4,7 @@
  * Purpose:     External preprocessor aliases for string functions.
  *
  * Created:     15th November 2002
- * Updated:     9th July 2020
+ * Updated:     9th July 2024
  *
  * Home:        http://stlsoft.org/
  *
